@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<plugin>
+
+  <extension point="org.eclipse.emf.ecore.generated_package">
+    <package 
+       uri = "http://www.cmg.org/tapas/xtext/ccsp/CCSPSpecification" 
+       class = "org.cmg.tapas.xtext.ccsp.cCSPSpecification.CCSPSpecificationPackage"
+       genModel = "org/cmg/tapas/xtext/ccsp/CCSPSpecification.genmodel" /> 
+	
+  </extension>
+
+
+
+
+</plugin>

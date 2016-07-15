@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Runtime
+Bundle-SymbolicName: org.cmg.tapas.slts.runtime
+Bundle-Version: 1.10.0.qualifier
+Bundle-Activator: org.cmg.tapas.slts.runtime.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.cmg.tapas.core;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: org.cmg.tapas.slts.runtime

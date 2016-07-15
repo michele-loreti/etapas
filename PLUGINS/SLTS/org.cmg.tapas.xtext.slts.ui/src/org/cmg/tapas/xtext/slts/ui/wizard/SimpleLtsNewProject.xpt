@@ -1,0 +1,14 @@
+«IMPORT org::cmg::tapas::xtext::slts::ui::wizard»
+
+«DEFINE main FOR SimpleLtsProjectInfo»
+«EXPAND model FOR this»
+«ENDDEFINE»
+
+«DEFINE model FOR SimpleLtsProjectInfo»
+«FILE "src/model/Model.slts"-»
+/*
+ * This is an example model
+ */
+Hello Xtext!
+«ENDFILE»
+«ENDDEFINE»

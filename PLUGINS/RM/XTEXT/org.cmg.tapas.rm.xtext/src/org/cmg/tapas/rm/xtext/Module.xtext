@@ -1,0 +1,235 @@
+grammar org.cmg.tapas.rm.xtext.Module with org.eclipse.xtext.common.Terminals
+
+generate module "http://www.cmg.org/tapas/rm/xtext/Module"
+
+Model:
+	'specification' specification=ID ':'
+	( 
+		actions += ActionDeclaration 
+		|
+		globalVariables += GlobalVariableDeclaration
+		| 
+		modules += Module
+		|
+		constants += Constant
+		|
+		functions += Function
+		|
+		systems += System	
+		|
+		labels += Label
+	)*
+	;
+
+Label:
+	'label' name=ID '=' body=Expression ';'
+;
+
+Function:
+	'function' name=ID '=' body=Expression ';'
+;
+
+System:
+	'system' name=ID ':'
+		system=ModuleStructure
+	(
+	'init:'
+		initguard=Expression
+	)?
+	'endsystem'
+;
+
+ModuleStructure:
+	ParallelOfModules 
+;
+
+ParallelOfModules returns ModuleStructure:
+	RestrictedRenamedModule (
+		(
+			(
+			{Synchronization.left=current} '|*|'
+			| {Cooperation.left=current} '|' (actions += [Action] (',' actions+=[Action] )*) '|'
+			| {Interleaving.left=current} '||' 
+			)
+		)	
+		right=RestrictedRenamedModule
+	)*
+;
+
+RestrictedRenamedModule returns ModuleStructure:
+	BasicModule ( 
+		{Hiding.module=current} '/{' (actions+=[Action] (',' actions+=[Action] )*)? '}'
+		| {Renaming.module=current} '[' (renaming += ActionRenaming (',' renaming+=ActionRenaming)* )? ']'
+	)?
+;
+
+ActionRenaming:
+	src=[Action] '->' trg=[Action]
+;
+
+BasicModule returns ModuleStructure:
+	'(' ModuleStructure ')'
+	| ModuleReference
+;
+
+ModuleReference:
+	module=[Module]
+;
+
+StoreElement:
+	variable=[Variable] '=' value=Expression	
+;
+
+Constant:
+	'const' name=ID '=' expression=Expression ';'
+;
+
+GlobalVariableDeclaration:
+	'variable' variable=Variable ';'
+;
+
+Variable:
+	name=ID ':' type=VariableType
+;
+
+VariableType:
+	BooleanType
+	| IntegerType
+;
+
+IntegerType:
+	'int' '(' start=Expression '..' end=Expression')'
+;
+
+BooleanType: {BooleanType}
+	'bool'
+;
+
+ActionDeclaration:
+	'action' actions += Action (',' actions += Action)* ';'	
+;
+	
+Action:
+	name=ID
+;	
+
+Module: 'module' name=ID ':' 
+	(
+		'variables' ':'
+			( variables += Variable ';' )*
+	)?
+	'rules' ':'
+	body = ModuleBody
+	'endmodule'
+;
+
+ModuleBody:
+	Rules | DeclarationRenaming
+;
+
+Rules: {Rules}
+	(rules += Rule)*		
+;
+
+Rule:
+	'[' (act=[Action])? ']' (guard=Expression)? '->' command = UpdateCommand ';'
+;
+
+UpdateCommand:
+	Skip | Commands
+;
+
+Skip: {Skip}
+	'skip'
+;
+
+Commands: {Commands}
+	commands += Command ('&' commands+=Command)* 
+;
+
+Command:
+	'{' variable=[Variable] '<-' expression=Expression '}'
+;
+
+Expression:
+	BooleanExpression
+;
+
+BooleanExpression returns Expression:
+	AndExpression (({Or.left=current} 'or')  right=AndExpression)*
+;
+
+AndExpression returns Expression:
+	RelationExpression (({And.left=current} 'and') right=RelationExpression)* 
+;
+
+RelationExpression returns Expression:
+	SumDiffExpression (
+		({Equal.left=current} '=='
+		|{Less.left=current} '<'
+		|{LessEq.left=current} '<='
+		|{GreaterEq.left=current} '>='
+		|{Greater.left=current} '>'
+		|{NotEqual.left=current} '!='
+		) 
+		right=SumDiffExpression
+	)?
+;
+
+SumDiffExpression returns Expression:
+	MulDivExpression (({Plus.left=current} '+' | ({Minus.left=current} '-' )) right=MulDivExpression)*
+;
+
+MulDivExpression returns Expression:
+	BaseExpression (({Multiplication.left = current} op='*'| {Division.left=current} '/') right=BaseExpression)*
+;
+
+BaseExpression returns Expression:
+	TrueExpression
+	| FalseExpression
+	| '(' Expression ')'
+	| NotExpression
+	| NumberExpression
+	| LiteralExpression
+;
+
+LiteralExpression:
+	reference=[Literal]
+;
+
+
+NumberExpression:
+	number = INT
+;
+
+NotExpression:
+	'!' arg=BaseExpression
+;
+
+FalseExpression: {FalseExpression}
+	'false'
+;
+
+TrueExpression: {TrueExpression}
+	'true'
+;
+
+DeclarationRenaming:
+	module=[Module] '[' (renaming += ElementRenaming (',' renaming += ElementRenaming)* )? ']'
+;
+
+ElementRenaming:
+	src=[RenameableElement] '->' trg=[RenameableElement]
+;
+
+RenameableElement:
+	Variable|Action
+;
+
+NamedElement:
+	Literal | Action
+;
+
+Literal:
+	Variable|Constant|Function
+;

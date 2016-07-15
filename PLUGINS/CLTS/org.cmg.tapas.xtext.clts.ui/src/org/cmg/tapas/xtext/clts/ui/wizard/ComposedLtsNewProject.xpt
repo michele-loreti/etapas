@@ -1,0 +1,14 @@
+«IMPORT org::cmg::tapas::xtext::clts::ui::wizard»
+
+«DEFINE main FOR ComposedLtsProjectInfo»
+«EXPAND model FOR this»
+«ENDDEFINE»
+
+«DEFINE model FOR ComposedLtsProjectInfo»
+«FILE "src/model/Model.clts"-»
+/*
+ * Begin to write your model!
+ */
+ 
+«ENDFILE»
+«ENDDEFINE»

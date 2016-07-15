@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Runtime
+Bundle-SymbolicName: org.cmg.tapas.ccsp.runtime
+Bundle-Version: 1.10.0.qualifier
+Bundle-Activator: org.cmg.tapas.ccsp.runtime.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.junit,
+ org.cmg.tapas;bundle-version="1.0.0",
+ org.cmg.tapas.core;bundle-version="1.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.cmg.tapas.ccsp.runtime

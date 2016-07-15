@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Runtime
+Bundle-SymbolicName: org.cmg.tapas.clts.runtime
+Bundle-Version: 1.10.0.qualifier
+Bundle-Activator: org.cmg.tapas.clts.runtime.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.cmg.tapas.core
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: org.cmg.tapas.clts.runtime

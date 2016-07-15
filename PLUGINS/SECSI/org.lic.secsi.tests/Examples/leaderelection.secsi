@@ -1,0 +1,81 @@
+/* 
+processi: Partecipant, Follower, Leader
+canali: Election, Leader (entrambi di tipo intero)
+
+Partecipant:
+Riceve un messaggio di elezione con un valore
+- se il valore ricevuto  minore del minimo attuale, il min viene aggiornato col nuovo valore.
+- se il valore  uguale al minimo significa che quello  il valore pi piccolo all'interno della rete e possiamo notificare il fatto d'aver trovato un leader.
+
+Leader:
+quando l'algoritmo  terminato abbiamo necessariamente un leader il quale inoltrerˆ a tutti gli altri nodi il suo status di Leader, gli altri si imposteranno a follower e inoltreranno il messaggio 
+
+Follower: 
+ad algoritmo terminato riceveranno il messaggio del leader e lo inoltreranno ai propri vicini
+
+
+Procedura inizializza:
+Invia ("election",id(x)) al processo a dx nella rete, imposta il minimo al proprio id(x);
+*/
+
+channel checks : boolean;
+channel checkr : boolean;
+channel send : [1..99];
+channel receive : [1..99];
+channel leader : [1..99] ; 
+channel getrandomid : [1..99];
+const [1..99] x = 0;
+
+
+//ogni processo imposta il proprio minimo locale al proprio id
+process RG ([1..99] range) {
+	getrandomid!(range);
+}
+
+//il processo che inizia invia sul canale election il proprio id e imposta il min a id
+process First() {
+	[1..99] id;
+	[1..99] min;
+	getrandomid?(id);	
+	min = id;
+	boolean flag = true;
+	checks!(flag);
+	send!(min);
+}
+
+process Partecipant(){
+	[1..99] value;
+	[1..99] lead = 0;
+	[1..99] id;
+	[1..99] min;
+	leader?(lead);
+	getrandomid?(id);
+	min = id;
+	boolean flag;
+	checks?(flag);
+	while(lead > 0 && flag){
+		receive?(value);
+		if (value < min){
+			send!(value);
+			min = value;
+		}	
+		else {
+			if(value > min) {
+				send!(min);
+			} else {
+				if (value==min){
+					leader!(value);
+				}
+			}
+		}
+	}
+} 
+
+System {
+	RG || First[send/uno,receive/zero,checks/chuno,checkr/chzero] || Partecipant[receive/uno,send/due,checkr/chuno] || Partecipant[receive/due,send/zero,checks/chzero]
+}
+
+
+
+
+

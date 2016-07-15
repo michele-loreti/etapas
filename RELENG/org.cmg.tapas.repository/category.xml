@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="eTAPAs" url="http://etapas.sourceforge.net">
+      eTAPAs is an Eclipse plug-in that provides tools for supporting specification 
+ and analysis of concurrent systems via Process Algebras. eTAPAs supports the use of
+ process algebrae to specify and analyze concurrent systems. Systems are described as 
+ process algebras terms that are then mapped to Labelled Transition Systems (LTSs). 
+ Properties can be verified by checking equivalences between concrete and abstract 
+ system descriptions, or by model checking temporal formulae over the obtained LTS.
+   </description>
+   <feature id="org.cmg.tapas.feature">
+      <category name="etapas"/>
+   </feature>
+   <feature id="org.cmg.tapas.xtext.ccsp.sdk">
+      <category name="etapas"/>
+   </feature>
+   <feature id="org.cmg.tapas.xtext.slts.sdk">
+      <category name="etapas"/>
+   </feature>
+   <feature id="org.cmg.tapas.xtext.clts.sdk">
+      <category name="etapas"/>
+   </feature>
+   <category-def name="etapas" label="eTAPAs (1.10.x)">
+      <description>
+      eTAPAs is an Eclipse plug-in that provides tools for supporting specification 
+ and analysis of concurrent systems via Process Algebras. eTAPAs supports the use of
+ process algebrae to specify and analyze concurrent systems. Systems are described as 
+ process algebras terms that are then mapped to Labelled Transition Systems (LTSs). 
+ Properties can be verified by checking equivalences between concrete and abstract 
+ system descriptions, or by model checking temporal formulae over the obtained LTS.
+      </description>
+   </category-def>
+</site>

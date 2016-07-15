@@ -1,0 +1,17 @@
+*.class
+bin/
+*~
+logs.zip
+*.log
+*.orig
+target/
+*.java._trace
+*.smap
+
+# set on single projects
+#src-gen/
+#xtend-gen/
+#emf-gen/
+
+buildroot
+org.sonar.ide.eclipse.core.prefs

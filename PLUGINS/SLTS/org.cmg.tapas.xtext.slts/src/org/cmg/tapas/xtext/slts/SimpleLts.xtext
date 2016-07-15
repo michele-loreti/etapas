@@ -1,0 +1,178 @@
+grammar org.cmg.tapas.xtext.slts.SimpleLts with org.eclipse.xtext.common.Terminals
+
+generate simpleLts "http://www.cmg.org/tapas/xtext/slts/SimpleLts"
+
+Model: {Model}
+	'model' name=ID ';'
+	( elements += Element )*
+	;
+
+Element:
+	Action | State | Label | Formula
+;
+
+Label:
+	'label' name = ID ':' ( states += [State] (',' states+=[State])*) ';'	
+;
+
+State:
+	(isInitial ?= 'init')? 'state' name = ID '{'
+		( rules += Rule ';')*
+	'}'	
+;
+
+Rule:
+	action=[Action] '->' next=[State]	
+;
+
+Action:
+	'action' name = ID ';'
+;
+
+Formula:
+	LtlFormulaDeclaration | HmlFormulaDeclaration
+;
+
+HmlFormulaDeclaration:
+	'hml''formula' name = ID '=' formula = HmlFormula ';'
+;
+	
+HmlFormula:
+	HmlOrFormula 
+;
+
+HmlOrFormula returns HmlFormula:
+	HmlAndFormula ({HmlOrFormula.left=current} '|' right=HmlAndFormula)*
+;
+
+HmlAndFormula returns HmlFormula:
+	HmlBaseFormula ({HmlAndFormula.left=current} '&' right=HmlBaseFormula)*
+;
+
+HmlBaseFormula returns HmlFormula:
+	HmlTrue | HmlFalse | '(' HmlFormula ')' | HmlNotFormula | HmlDiamondFormula | HmlBoxFormula 
+	| HmlRecursionFormula | HmlRecursionVariable | HmlPredicate	
+;
+
+HmlPredicate:
+	'#[' label=[Label] ']'
+;
+
+HmlTrue: {HmlTrue}
+	'true'
+;
+
+HmlFalse: {HmlFalse}
+	'false'
+;
+
+HmlNotFormula:
+	'!' arg=HmlBaseFormula
+;
+
+HmlDiamondFormula:
+	'<' action=LabelPredicate '>' arg=HmlBaseFormula
+;
+
+HmlBoxFormula:
+	'[' action=LabelPredicate ']' arg=HmlBaseFormula
+;
+
+HmlRecursionFormula:
+	HmlMinFixPoint | HmlMaxFixPoint
+;
+
+HmlMinFixPoint:
+	'min' name=ID '.' arg=HmlBaseFormula
+;
+
+HmlMaxFixPoint:
+	'max' name=ID '.' arg=HmlBaseFormula
+;
+
+HmlRecursionVariable:
+	refeerence=[HmlRecursionFormula]
+;
+
+LtlFormulaDeclaration:
+	'ltl''formula' name = ID '=' formula = LtlFormula ';'
+;
+
+LtlFormula:
+	LtlOrFormula	
+;
+
+LtlOrFormula returns LtlFormula:
+	LtlAndFormula ({LtlOrFormula.left=current} '|' right=LtlAndFormula)*
+;
+
+LtlAndFormula returns LtlFormula:
+	LtlUntilFormula ({LtlAndFormula.left=current} '&' right=LtlUntilFormula)*
+;
+
+LtlUntilFormula returns LtlFormula:
+	LtlBaseFormula ({LtlUntilFormula.left=current}'\\U' right=LtlBaseFormula)*
+;
+
+LtlBaseFormula returns LtlFormula:
+	LtlTrue | LtlFalse | '(' LtlFormula ')' | LtlNotFormula | LtlNextFormula
+		| LtlAlwaysFormula | LtlEventuallyFormula | LtlAtomicProposition
+;
+
+LtlAtomicProposition:
+	prop=[Label]	
+;
+
+LtlNextFormula:
+	'\\X' '{' arg=LtlBaseFormula '}'
+;
+
+LtlAlwaysFormula:
+	'\\G' arg=LtlBaseFormula
+;
+
+LtlEventuallyFormula:
+	'\\F' arg=LtlBaseFormula
+;
+
+LtlNotFormula:
+	'!' arg=LtlBaseFormula
+;
+
+LtlTrue: {LtlTrue}
+	'true'
+;
+
+LtlFalse: {LtlFalse}
+	'false'
+;
+
+LabelPredicate:
+	CupLabelPredicate
+;
+
+CupLabelPredicate returns LabelPredicate:
+	CapLabelPredicate ( {CupLabelPredicate.left=current} '|' righ=CupLabelPredicate)?
+;
+
+CapLabelPredicate returns LabelPredicate:
+	BaseLabelPredicate ( {CapLabelPredicate.left=current} '&' right=CapLabelPredicate)?
+;
+
+BaseLabelPredicate returns LabelPredicate:
+	AnyLabelPredicate | ActionLabelPredicate | NotLabelPredicate
+;
+
+NotLabelPredicate:
+	'!' arg=BaseLabelPredicate
+;
+
+
+ActionLabelPredicate:
+	act=[Action]
+;
+
+
+AnyLabelPredicate: {AnyLabelPredicate}
+	'*'
+;	

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="jSSTL" url="http://quanticol.sourceforge.net">
+      jSSTL is a Java tool for the specification and verification of SSTL. 
+      This tool, developed in Java, consists of a Java library (jSSTL API) 
+      and a front-end, integrated in ECLIPSE.
+   </description>
+   <feature id="org.jsstl.feature">
+      <category name="jsstl"/>
+   </feature>
+   <feature id="org.jsstl.xtext.formulas.sdk">
+      <category name="jsstl"/>
+   </feature>
+   <category-def name="jsstl" label="jSSTL (1.0.x)">
+      <description>
+      jSSTL is a Java tool for the specification and verification of SSTL. 
+      This tool, developed in Java, consists of a Java library (jSSTL API) 
+      and a front-end, integrated in ECLIPSE.
+      </description>
+   </category-def>
+</site>

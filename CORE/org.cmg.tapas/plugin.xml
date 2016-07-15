@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="TAPAsElementViewProvider" name="TAPAsElementViewProvider" schema="schema/TAPAsElementViewProvider.exsd"/>
+   <extension-point id="TAPAsLTSBuilderProvider" name="TAPAsLTSBuilderProvider" schema="schema/TAPAsLTSBuilderProvider.exsd"/>
+   <extension-point id="TAPAsEquivalenceCheckerProvider" name="TAPAsEquivalenceCheckerProvider" schema="schema/TAPAsEquivalenceCheckerProvider.exsd"/>
+   <extension-point id="TAPAsModelCheckerProvider" name="TAPAsModelCheckerProvider" schema="schema/TAPAsModelCheckerProvider.exsd"/>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.cmg.tapas.view.category"
+            name="TAPAs Views">
+      </category>
+      <view
+            category="org.cmg.tapas.view.category"
+            class="org.cmg.tapas.views.TAPAsModelCheckingView"
+            id="org.cmg.tapas.views.TAPAsModelCheckingView"
+            name="TAPAs Model checking">
+      </view>
+      <view
+            category="org.cmg.tapas.view.category"
+            class="org.cmg.tapas.views.TAPAsElementView"
+            id="org.cmg.tapas.views.TAPAsElementView"
+            name="TAPAs Element View">
+      </view>
+      <view
+            category="org.cmg.tapas.view.category"
+            class="org.cmg.tapas.views.TAPAsLTSView"
+            id="org.cmg.tapas.views.TAPAsLTSView"
+            name="TAPAs LTS View"
+            restorable="true">
+      </view>
+      <view
+            category="org.cmg.tapas.view.category"
+            class="org.cmg.tapas.views.TAPAsEquivalenceCheckerView"
+            id="org.cmg.tapas.views.TAPAsEquivalenceCheckerView"
+            name="TAPAs Equivalence Checker ">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.cmg.tapas.command.ModelChecking"
+            name="Model Checking">
+      </command>
+      <command
+            id="org.cmg.tapas.command.GenerateLTS"
+            name="Generate LTS">
+      </command>
+      <command
+            id="org.cmg.tapas.command.ElementView"
+            name="View Element">
+      </command>
+      <command
+            id="org.cmg.tapas.command.EquivalenceChecker"
+            name="Equivalence Checker">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="org.cmg.tapas.toolbar.MainToolbar"
+               label="Tapas Toolbar">
+            <command
+                  commandId="org.cmg.tapas.command.ModelChecking"
+                  icon="src/org/cmg/tapas/views/icons/tnames_co.gif"
+                  label="Model Checking"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.cmg.tapas.command.GenerateLTS"
+                  icon="src/org/cmg/tapas/views/icons/ch_callees.gif"
+                  label="Generate LTS"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.cmg.tapas.command.ElementView"
+                  icon="src/org/cmg/tapas/views/icons/jwatch_obj.gif"
+                  label="View Element"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.cmg.tapas.command.EquivalenceChecker"
+                  icon="src/org/cmg/tapas/views/icons/expression_obj.gif"
+                  label="Equivalence Checker"
+                  style="push">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.cmg.tapas.handlers.ModelCheckingHandler"
+            commandId="org.cmg.tapas.command.ModelChecking">
+      </handler>
+      <handler
+            class="org.cmg.tapas.handlers.GenerateLTSHandler"
+            commandId="org.cmg.tapas.command.GenerateLTS">
+      </handler>
+      <handler
+            class="org.cmg.tapas.handlers.ElementViewHandler"
+            commandId="org.cmg.tapas.command.ElementView">
+      </handler>
+      <handler
+            class="org.cmg.tapas.handlers.EquivalenceCheckerHandler"
+            commandId="org.cmg.tapas.command.EquivalenceChecker">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.cmg.tapas.perspective.TAPAsPerspective"
+            id="org.cmg.tapas.perspective.TAPAsPerspective"
+            name="TAPA Perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.cmg.tapas.newprojectcategory"
+            name="eTAPAS Project">
+      </category>
+   </extension>
+
+</plugin>

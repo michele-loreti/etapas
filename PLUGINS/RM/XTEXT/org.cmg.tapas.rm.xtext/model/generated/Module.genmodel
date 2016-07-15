@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.cmg.tapas.rm.xtext/src-gen" editDirectory="/org.cmg.tapas.rm.xtext.edit/src"
+    editorDirectory="/org.cmg.tapas.rm.xtext.editor/src" modelPluginID="org.cmg.tapas.rm.xtext"
+    forceOverwrite="true" modelName="Module" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    complianceLevel="6.0" copyrightFields="false" editPluginID="org.cmg.tapas.rm.xtext.edit"
+    editorPluginID="org.cmg.tapas.rm.xtext.editor" runtimeVersion="2.11">
+  <genPackages prefix="Module" basePackage="org.cmg.tapas.rm.xtext" disposableProviderFactory="true"
+      fileExtensions="rm" ecorePackage="Module.ecore#/">
+    <genClasses ecoreClass="Module.ecore#//Model">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Module.ecore#//Model/specification"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Model/actions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Model/globalVariables"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Model/modules"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Model/constants"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Model/functions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Model/systems"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Model/labels"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Label">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Module.ecore#//Label/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Label/body"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Function">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Function/body"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//System">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Module.ecore#//System/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//System/system"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//System/initguard"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//ModuleStructure"/>
+    <genClasses ecoreClass="Module.ecore#//ActionRenaming">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Module.ecore#//ActionRenaming/src"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Module.ecore#//ActionRenaming/trg"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//ModuleReference">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Module.ecore#//ModuleReference/module"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//StoreElement">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Module.ecore#//StoreElement/variable"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//StoreElement/value"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Constant">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Constant/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//GlobalVariableDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//GlobalVariableDeclaration/variable"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Variable">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Variable/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//VariableType"/>
+    <genClasses ecoreClass="Module.ecore#//IntegerType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//IntegerType/start"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//IntegerType/end"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//BooleanType"/>
+    <genClasses ecoreClass="Module.ecore#//ActionDeclaration">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//ActionDeclaration/actions"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Action"/>
+    <genClasses ecoreClass="Module.ecore#//Module">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Module.ecore#//Module/name"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Module/variables"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Module/body"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//ModuleBody"/>
+    <genClasses ecoreClass="Module.ecore#//Rules">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Rules/rules"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Rule">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Module.ecore#//Rule/act"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Rule/guard"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Rule/command"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//UpdateCommand"/>
+    <genClasses ecoreClass="Module.ecore#//Skip"/>
+    <genClasses ecoreClass="Module.ecore#//Commands">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Commands/commands"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Command">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Module.ecore#//Command/variable"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Command/expression"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Expression"/>
+    <genClasses ecoreClass="Module.ecore#//LiteralExpression">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Module.ecore#//LiteralExpression/reference"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//NumberExpression">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Module.ecore#//NumberExpression/number"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//NotExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//NotExpression/arg"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//FalseExpression"/>
+    <genClasses ecoreClass="Module.ecore#//TrueExpression"/>
+    <genClasses ecoreClass="Module.ecore#//DeclarationRenaming">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Module.ecore#//DeclarationRenaming/module"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//DeclarationRenaming/renaming"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//ElementRenaming">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Module.ecore#//ElementRenaming/src"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Module.ecore#//ElementRenaming/trg"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//RenameableElement"/>
+    <genClasses ecoreClass="Module.ecore#//NamedElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Module.ecore#//NamedElement/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Literal"/>
+    <genClasses ecoreClass="Module.ecore#//Synchronization">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Synchronization/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Synchronization/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Cooperation">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Cooperation/left"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Module.ecore#//Cooperation/actions"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Cooperation/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Interleaving">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Interleaving/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Interleaving/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Hiding">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Hiding/module"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Module.ecore#//Hiding/actions"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Renaming">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Renaming/module"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Renaming/renaming"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Or">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Or/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Or/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//And">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//And/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//And/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Equal">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Equal/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Equal/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Less">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Less/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Less/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//LessEq">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//LessEq/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//LessEq/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//GreaterEq">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//GreaterEq/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//GreaterEq/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Greater">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Greater/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Greater/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//NotEqual">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//NotEqual/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//NotEqual/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Plus">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Plus/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Plus/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Minus">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Minus/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Minus/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Multiplication">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Multiplication/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Module.ecore#//Multiplication/op"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Multiplication/right"/>
+    </genClasses>
+    <genClasses ecoreClass="Module.ecore#//Division">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Division/left"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Module.ecore#//Division/right"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

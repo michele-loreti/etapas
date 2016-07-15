@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Runtime
+Bundle-SymbolicName: org.cmg.tapas.rm.runtime
+Bundle-Version: 1.0.0.qualifier
+Export-Package: org.cmg.tapas.rm.runtime,
+ org.cmg.tapas.rm.runtime.tests
+Require-Bundle: org.cmg.tapas.core;bundle-version="1.0.0",
+ org.cmg.tapas;bundle-version="1.0.0"

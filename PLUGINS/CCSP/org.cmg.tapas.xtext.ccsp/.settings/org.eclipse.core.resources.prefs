@@ -1,0 +1,4 @@
+eclipse.preferences.version=1
+encoding//src/org/cmg/tapas/xtext/ccsp/CCSPSpecification.xtext=UTF-8
+encoding//src/org/cmg/tapas/xtext/ccsp/generator/CCSPSpecificationGenerator.xtend=UTF-8
+encoding/<project>=UTF-8

@@ -1,0 +1,14 @@
+«IMPORT org::cmg::tapas::xtext::ccsp::ui::wizard»
+
+«DEFINE main FOR CCSPSpecificationProjectInfo»
+«EXPAND model FOR this»
+«ENDDEFINE»
+
+«DEFINE model FOR CCSPSpecificationProjectInfo»
+«FILE "src/model/Model.ccsp"-»
+/*
+ * This is an example model
+ */
+Hello Xtext!
+«ENDFILE»
+«ENDDEFINE»

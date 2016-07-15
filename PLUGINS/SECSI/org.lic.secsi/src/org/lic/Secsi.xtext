@@ -1,0 +1,278 @@
+grammar org.lic.Secsi with org.eclipse.xtext.common.Terminals
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+generate secsi "http://www.lic.org/Secsi"
+
+/* 
+Program:
+	name=ID (elements+=Element)* system=System
+;
+
+Element:
+	 globalchanels+=ChannelsDeclaration|
+	 agents+=Agent|
+	 types+=TypeDef |
+	 consts+=Constant
+;
+*/
+
+Program:
+	((globalchanels+=ChannelsDeclaration)|
+	 (agents+=Agent)|
+	 (types+=TypeDef) |
+	 (consts+=Constant))* 
+	(system=System)?
+	(properties=PropList)?
+;
+
+Constant:
+	'const' type=TypeExpression name=ID '=' value=Expression ';'
+;
+
+Agent:							  //process
+	'process' name=ID '('(params+=Variable (',' params+=Variable)* )? ')' 
+	(lcDecs+=ChannelsDeclaration)* 
+	s=Statement 
+;
+
+ChannelsDeclaration:
+	'channel' declared+=Channel (',' declared+=Channel)*  ';'
+;
+
+Channel:
+	name=ID ':' type=TypeExpression
+;
+
+Type:
+	BooleanType | IntegerType | TypeDef
+;
+
+TypeExpression:
+	'signal' {Signal}
+	| TypeReference
+	| IntegerType
+	| BooleanType
+;
+
+IntegerType:
+	'[' min=Expression '..' max=Expression ']'
+;
+
+BooleanType: {BooleanType}
+	'boolean'
+;
+
+
+
+TypeReference:
+	reference=[TypeDef]	
+;
+
+Block: {Block}
+	( cmds+=Statement )*
+;
+
+Statement:
+	IfThenElse  |
+	While       |
+	Action 	    |
+	Switch_Case |
+	Assignment  |
+	VarDeclaration |
+	'{' Block '}'
+;
+
+Action:
+	channel=[Channel] modality=ActionModality (notSignal?='('e=Expression')')? ';'
+;
+
+Switch_Case:
+	'match' '(' value=Expression ')' '{'
+		(cases += Case)*
+		'otherwise' ':' default=Statement
+	'}'
+;
+
+Case returns Switch_Case:
+	'with ' value=Expression ':' cmd=Statement
+;
+
+enum ActionModality:
+	INPUT='?' | OUTPUT='!'
+;
+
+IfThenElse:
+	'if' '(' expression=Expression ')' 
+		thenBranch=Statement 
+		(=> withElse?='else' elseBranch=Statement )?
+;
+
+While:
+	'while' '(' expresion=Expression ')' body=Statement
+;
+
+System:
+	'System' '{' body=Par '}' 
+;
+
+Par:
+	action=Sum({Par.left=current} '||' right=Par)?
+;
+
+Sum:
+	action=Proc({Sum.left=current} '+' right=Sum)?
+;
+
+Proc:
+	name=[Agent]  |  name1=[Agent] re=Ren
+;
+
+Ren:
+	'[' leflists+=[Channel] '/' rightlist+=ID (',' leflists+=[Channel] '/' rightlist+=ID)* ']' (r=Res)?
+;
+
+Res:
+	 '\\' '{' leftlists=[Channel] (',' leflists+=[Channel])* '}'
+;
+
+PropList: {PropList}
+	'Prop' '{' (element+=Prop)* '}' 
+;
+
+Prop:
+	 PropBody ';'
+;
+
+PropBody:
+	OrProp
+;
+
+OrProp returns PropBody:
+	ActProp ({OrProp.left=current} op=('||'|'&&') right=OrProp)?
+;
+
+//AndProp returns PropBody:
+//	ActProp ({AndProp.left=current} '&&' right=AndProp)?
+//;
+
+ActProp returns PropBody:
+	'<'action=[Channel]'>' arg=Term | '['action=[Channel] ']' arg=Term | arg=Term
+;
+
+Term returns Prop: {PropBody}
+	'(' exp=PropBody ')' | NotProp | 'true' | 'false' 
+;
+
+NotProp:
+	'!' arg=Term
+;
+
+Expression:
+ OrExpression
+;
+
+OrExpression returns Expression:
+ AndExpression ( { OrExpression.left=current } "||" right=OrExpression )?
+;
+
+AndExpression returns Expression:
+ Relation ( { AndExpression.left=current } "&&" right=AndExpression )? 
+;
+
+Relation returns Expression:
+ SumExpression ( {Relation.left=current} op=Relop right=SumExpression )?
+;
+
+SumExpression returns Expression:
+ MulExpression ( {SumExpression.left=current} op=('+'|'-'|'%') right=SumExpression)?
+;
+
+MulExpression returns Expression:
+ BaseExpression ( {MulExpression.left=current} op=('*'|'/') right=MulExpression)?
+;
+
+BaseExpression returns Expression:
+ IntConstant 
+ | BoolConstant 
+ | Negation
+ | "(" Expression ")"
+ | ReferenceInExpression
+;
+
+Negation:
+	"!" arg=BaseExpression
+;
+
+ReferenceInExpression:
+	reference=[ReferenceableElement]
+;
+
+ReferenceableElement:
+	Variable | TypeElement | Constant
+;
+
+TypeDef:
+	'typedef' name=ID '=' elements+=TypeElement ('|' elements+=TypeElement)* ';'
+;
+
+TypeElement:
+	name=ID
+;
+
+
+
+//terminal ELEMENT_ID returns ecore::EString:
+//	('A'..'Z')('A'..'Z'|'0'..'9'|'_')*
+//;
+
+Variable:
+  type=TypeExpression name=ID
+;
+
+IntConstant:
+ value=INT
+;
+
+BoolConstant:
+ value=BoolValue
+;
+
+enum BoolValue:
+ True="true" | False="false"
+;
+
+VarDeclaration: 
+	variable=Variable ('=' init=Expression)? ";"
+;
+
+Assignment:
+	id=[Variable]	'=' in=Expression ';'
+;
+
+enum Relop:
+ REL_EQ = "==" | REL_NEQ = "!=" | REL_LEQ = "<=" |
+ REL_LES = "<" | REL_GEQ = ">=" | REL_GTR = ">"
+;
+
+//TERMINALS
+
+//terminal BOOLEAN returns ecore::EBoolean:
+// 'true' | 'false';
+
+terminal  INT returns ecore::EInt: 
+('0'..'9')+ ;
+
+terminal ML_COMMENT: 
+'/*' -> '*/'
+;
+terminal SL_COMMENT : 
+'//' !('\n'|'\r')* ('\r'? '\n')?
+;
+/* 
+terminal REAL returns ecore::EDouble:
+('0'..'9')+('.' ('0'..'9')+)?;
+
+terminal STRING : 
+'"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'"'|"'"|'\\') | !('\\'|'"') )* '"' |
+"'" ( '\\' ('b'|'t'|'n'|'f'|'r'|'"'|"'"|'\\') | !('\\'|"'") )* "'"
+;*/

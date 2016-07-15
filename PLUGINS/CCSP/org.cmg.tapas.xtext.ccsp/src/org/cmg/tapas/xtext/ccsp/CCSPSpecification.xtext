@@ -1,0 +1,293 @@
+grammar org.cmg.tapas.xtext.ccsp.CCSPSpecification with org.eclipse.xtext.common.Terminals
+
+generate cCSPSpecification "http://www.cmg.org/tapas/xtext/ccsp/CCSPSpecification"
+
+Model:
+	'model' name=ID ';'
+	(
+		processes += ProcessDeclaration |
+		systems += SystemDeclaration | 
+		formulae += FormulaDeclaration |
+		channels += Channel
+	)*
+;
+
+FormulaDeclaration:
+	ActlFormulaDeclaration | HmlFormulaDeclaration
+;
+
+ActlFormulaDeclaration:
+	'actl' 'formula' name=ID ':'
+		body=StateFormula
+	'end'
+;
+
+HmlFormulaDeclaration: 
+	'hml' 'formula' name=ID ':'
+		body=HmlFormula
+	'end'
+;
+
+HmlFormula:
+	HmlOrFormula 
+;
+
+HmlOrFormula returns HmlFormula:
+	HmlAndFormula ({HmlOrFormula.left=current} '|' right=HmlAndFormula)*
+;
+
+HmlAndFormula returns HmlFormula:
+	HmlBaseFormula ({HmlAndFormula.left=current} '&' right=HmlBaseFormula)*
+;
+
+HmlBaseFormula returns HmlFormula:
+	HmlTrue | HmlFalse | '(' HmlFormula ')' | HmlNotFormula | HmlDiamondFormula | HmlBoxFormula 
+	| HmlRecursionFormula | HmlRecursionVariable
+;
+
+HmlTrue: {HmlTrue}
+	'true'
+;
+
+HmlFalse: {HmlFalse}
+	'false'
+;
+
+HmlNotFormula:
+	'!' arg=HmlBaseFormula
+;
+
+HmlDiamondFormula:
+	'<' action=LabelPredicate '>' arg=HmlBaseFormula
+;
+
+HmlBoxFormula:
+	'[' action=LabelPredicate ']' arg=HmlBaseFormula
+;
+
+HmlRecursionFormula:
+	HmlMinFixPoint | HmlMaxFixPoint
+;
+
+HmlMinFixPoint:
+	'min' name=ID '.' arg=HmlBaseFormula
+;
+
+HmlMaxFixPoint:
+	'max' name=ID '.' arg=HmlBaseFormula
+;
+
+HmlRecursionVariable:
+	refeerence=[HmlRecursionFormula]
+;
+
+StateFormula:
+	OrFormula
+;
+
+OrFormula returns StateFormula:
+	AndFormula ({OrFormula.left=current} '|' right=AndFormula)*
+;
+
+AndFormula returns StateFormula:
+	BaseFormula ({AndFormula.left=current} '&' right=BaseFormula)*
+;
+
+BaseFormula returns StateFormula:
+	TrueFormula
+	| FalseFormula
+	| NotFormula
+	| '(' StateFormula ')'
+	| ExistsFormula
+	| ForAllFormula
+;
+
+ForAllFormula:
+	'\\A' path=PathFormula
+;
+
+
+ExistsFormula:
+	'\\E' path=PathFormula
+;
+
+PathFormula:
+	NextFormula | UntilFormula | AlwaysFormula | EventuallyFormula
+;
+
+EventuallyFormula:
+	'\\F' ('{' label=LabelPredicate '}')? arg=BaseFormula
+;
+
+
+AlwaysFormula:
+	'\\G' ('{' label=LabelPredicate '}')? arg=BaseFormula
+;
+
+
+UntilFormula:
+	left=BaseFormula 	'{' label1=LabelPredicate '}' '\\U' ('{' label2=LabelPredicate '}')? right=BaseFormula
+;
+
+
+NextFormula:
+	'\\X' '{' label=LabelPredicate '}' arg=BaseFormula
+;
+
+LabelPredicate:
+	CupLabelPredicate
+;
+
+CupLabelPredicate returns LabelPredicate:
+	CapLabelPredicate ( {CupLabelPredicate.left=current} '|' righ=CupLabelPredicate)?
+;
+
+CapLabelPredicate returns LabelPredicate:
+	BaseLabelPredicate ( {CapLabelPredicate.left=current} '&' right=CapLabelPredicate)?
+;
+
+BaseLabelPredicate returns LabelPredicate:
+	AnyLabelPredicate | ActionLabelPredicate | NotLabelPredicate
+;
+
+NotLabelPredicate:
+	'-' arg=BaseLabelPredicate
+;
+
+
+ActionLabelPredicate:
+	act=Action
+;
+
+
+AnyLabelPredicate: {AnyLabelPredicate}
+	'*'
+;
+
+
+NotFormula returns StateFormula:
+	'!' BaseFormula	
+;
+
+FalseFormula: {FalseFormula}
+	'false'
+;
+
+
+TrueFormula: {TrueFormula}
+	'true'
+;	
+
+Channel:
+	'channel' name=ID ';'
+;
+
+ProcessDeclaration:
+	'process' name=ID ':'
+		(states += StateDeclaration)*
+	'end'
+;
+
+SystemDeclaration:
+	'system' name=ID ':'
+		body=SystemBody
+	'end'
+;
+
+SystemBody: 
+	ParallelOperators
+;
+
+Restriction returns SystemBody:
+	Renaming ({Restriction.arg = current} '\\' '{' channels+=[Channel] (',' channels+=[Channel])* '}' )?
+;
+
+Renaming returns SystemBody:
+	BaseProcess ({Renaming.arg = current} '<' maps += Mapping (',' maps += Mapping )* '>' )?
+;
+
+Mapping:
+	src=[Channel] '->' trg=[Channel]
+;
+
+ParallelOperators returns SystemBody:
+	ExternalChoice (
+		{ParallelComposition.left=current} '|' right=ParallelOperators
+		| {CooperationComposition.left=current} '|{' (channels+=[Channel] (',' channels+=[Channel])*)? '}|' right=ParallelOperators
+		| {SynchronizationComposition.left=current} '|*|' right=ParallelOperators
+		| {InterleavingComposition.left=current} '||' right=ParallelOperators
+	)?
+;
+
+//ParallelComposition returns SystemBody:
+//	CooperationComposition ({ParallelComposition.left=current} '|' right=ParallelComposition)?
+//;
+
+//CooperationComposition returns SystemBody:
+//	SynchronizationComposition ({CooperationComposition.left=current} '|{' (channels+=[Channel] (',' channels+=[Channel])*)? '}|' right=CooperationComposition)?
+//;
+
+//
+//SynchronizationComposition returns SystemBody:
+//	InterleavingComposition ({SynchronizationComposition.left=current} '|*|' right=SynchronizationComposition)?
+//;
+
+//
+//InterleavingComposition returns SystemBody:
+//	ExternalChoice ({InterleavingComposition.left=current} '||' right=InterleavingComposition)?
+//;
+
+ExternalChoice returns SystemBody:
+	InternalChoice ({ExternalChoice.left=current}'(+)' right=ExternalChoice)?
+;
+
+InternalChoice returns SystemBody:
+	Restriction ({InternalChoice.left=current} '[+]' right=InternalChoice)?
+;
+
+BaseProcess returns SystemBody:
+	NilProcess | Reference | '(' SystemBody ')' | '{' SystemBody '}'
+;
+
+Reference:
+	=>( {ProcessReference} process=[ProcessDeclaration] '[' state=[StateDeclaration] ']')
+	| =>( {SystemReference} state=[SystemDeclaration] )
+;
+
+NilProcess: {NilProcess}
+	'nil'
+;
+
+StateDeclaration:
+	name=ID '->' (actions += Transition ('+' actions += Transition)*) ';'
+;
+
+Transition:
+	act=Action '.' next=NextProcess
+;
+
+NextProcess:
+	NilProcess | ReferenceInProcess
+;
+
+ReferenceInProcess:
+	=>( {ProcessReference} process=[ProcessDeclaration] '[' state=[StateDeclaration] ']')
+	| =>( {StateReference} state=[StateDeclaration] )
+;
+
+Action:
+	InputAction | OutputAction | TauAction
+;
+
+TauAction: {TauAction}
+	'tau'
+;
+
+InputAction:
+	'?' channel=[Channel]
+;
+
+OutputAction:
+	'!' channel=[Channel]
+;
+
