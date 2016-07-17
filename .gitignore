@@ -7,6 +7,8 @@ logs.zip
 target/
 *.java._trace
 *.smap
+.antlr-generator*.jar
+*.xtendbin
 
 # set on single projects
 #src-gen/
