@@ -223,7 +223,7 @@ public class CLTSEquivalenceCheckerProvider implements
 			cltsModel = (CltsModule)  TAPAsProjectHelper.loadClassFromProject(CltsModule.class.getClassLoader(), 
 					module.eResource(), module.getName() , file.getProject()).newInstance() ;	
 			} catch (Exception e) {
-				System.out.println("Exception: "+ e);
+				e.printStackTrace();
 				cltsModel = null;
 			}
 		}

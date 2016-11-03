@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 
 import org.cmg.tapas.core.graph.filter.Filter;
+import org.cmg.tapas.core.regular.Automaton;
 import org.cmg.tapas.formulae.hml.HmlFormula;
 import org.cmg.tapas.formulae.ltl.LtlFormula;
 
@@ -17,6 +19,8 @@ public abstract class CltsModule {
 	protected HashMap<String,HmlFormula<CltsProcess, CltsAction>> formulae;
 	
 	protected HashMap<String,LtlFormula<CltsProcess>> ltlFormulae;
+
+	protected HashMap<String,Automaton<Predicate<CltsProcess>>> srProperties;
 	
 	private HashMap<String, Set<CltsState>> labels;
 	
@@ -27,6 +31,7 @@ public abstract class CltsModule {
 		this.ltsComposition = new TreeMap<String, CltsProcess>();
 		this.formulae = new HashMap<String,HmlFormula<CltsProcess, CltsAction>>();
 		this.ltlFormulae = new HashMap<String,LtlFormula<CltsProcess>>();
+		this.srProperties = new HashMap<String,Automaton<Predicate<CltsProcess>>>();
 		this.labels = new HashMap<String, Set<CltsState>>();
 		this.actions = new HashMap<String, CltsAction>();
 		initActions();
@@ -92,6 +97,10 @@ public abstract class CltsModule {
 		this.ltlFormulae.put(name, formula);
 	}
 	
+	protected void addFormula( String name , Automaton<Predicate<CltsProcess>> formula){
+		this.srProperties.put(name, formula);
+	}
+	
 	public Set<String> getHmlFormulae() {
 		return formulae.keySet();
 	}
@@ -140,4 +149,14 @@ public abstract class CltsModule {
 		};
 		
 	}
+
+	public Set<String> getRegularSafetyProperties() {
+		return srProperties.keySet();
+	}
+	
+	public Automaton<Predicate<CltsProcess>> getRegularSafetyProperty( String name ) {
+		return srProperties.get(name);
+	}
+	
+
 }

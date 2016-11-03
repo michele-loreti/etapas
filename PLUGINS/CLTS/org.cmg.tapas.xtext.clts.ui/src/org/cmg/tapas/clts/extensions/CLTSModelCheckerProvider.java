@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.cmg.tapas.TAPAsProjectHelper;
 import org.cmg.tapas.clts.runtime.CltsAction;
@@ -11,6 +12,9 @@ import org.cmg.tapas.clts.runtime.CltsModule;
 import org.cmg.tapas.clts.runtime.CltsProcess;
 import org.cmg.tapas.clts.runtime.CltsState;
 import org.cmg.tapas.core.graph.Graph;
+import org.cmg.tapas.core.mc.ModelCheckingResult;
+import org.cmg.tapas.core.mc.regular.SafetyRegularModelChecker;
+import org.cmg.tapas.core.regular.Automaton;
 import org.cmg.tapas.extensions.TAPAsModelCheckerProvider;
 import org.cmg.tapas.formulae.hml.HmlFormula;
 import org.cmg.tapas.formulae.ltl.LtlFormula;
@@ -60,6 +64,9 @@ public class CLTSModelCheckerProvider implements TAPAsModelCheckerProvider {
 
 	@Override
 	public LabeledElement[] getProcesses(String category) {
+		if (cltsModel == null) {
+			return new LabeledElement[] {};
+		}
 		if("Lts".equals(category)){
 			LinkedList<LabeledElement> processes = new LinkedList<LabeledElement>();
 			Set<String> processNames = cltsModel.getLtsList();
@@ -89,7 +96,7 @@ public class CLTSModelCheckerProvider implements TAPAsModelCheckerProvider {
 
 	@Override
 	public String[] getFormulaeCategories() {
-		return new String[] {"HML", "LTL"};
+		return new String[] {"HML", "LTL" , "REGULAR SAFETY"};
 	}
 
 	@Override
@@ -103,6 +110,12 @@ public class CLTSModelCheckerProvider implements TAPAsModelCheckerProvider {
 		if("LTL".equals(category)){
 			if(cltsModel.getLtlFormulae()!= null){
 				String[] formulae = cltsModel.getLtlFormulae().toArray(new String[cltsModel.getLtlFormulae().size()]);
+				return formulae;
+			}
+		}
+		if("REGULAR SAFETY".equals(category)){
+			if(cltsModel.getRegularSafetyProperties()!= null){
+				String[] formulae = cltsModel.getRegularSafetyProperties().toArray(new String[cltsModel.getRegularSafetyProperties().size()]);
 				return formulae;
 			}
 		}
@@ -124,23 +137,37 @@ public class CLTSModelCheckerProvider implements TAPAsModelCheckerProvider {
 		if(cltsModel.getLtlFormulae().contains(formula)){
 			LtlFormula<CltsProcess> f = cltsModel.getLtlFormula(formula);
 			
-//			LTSGraph<CltsProcess, CltsAction> lts = new LTSGraph<CltsProcess, CltsAction>();
-//			lts.addState( (CltsProcess) p );
-//			lts.expand();
-//
-//			//Se esistono stati di deadlock aggiunge un self loop
-//			Graph<CltsProcess, CltsAction> graph = lts.getGraph();
-//			for(CltsProcess s : graph.getStates()){
-//				HashMap<CltsAction, Set<CltsProcess>> map = s.getNext();
-//				if(map.keySet().isEmpty()){
-//					graph.addEdge(s, new CltsAction(" "), s);
-//				}
-//			}
-//			
-//			Set<CltsProcess> initialStates = new HashSet<CltsProcess>();
-//			initialStates.add( (CltsProcess) p );
-//			LtlModelChecker<CltsProcess> mc = new LtlModelChecker<CltsProcess>(graph, initialStates);
-//			return mc.check(f);
+			LTSGraph<CltsProcess, CltsAction> lts = new LTSGraph<CltsProcess, CltsAction>();
+			lts.addState( (CltsProcess) p );
+			lts.expand();
+
+			//Se esistono stati di deadlock aggiunge un self loop
+			Graph<CltsProcess, CltsAction> graph = lts.getGraph();
+			for(CltsProcess s : graph.getStates()){
+				HashMap<CltsAction, Set<CltsProcess>> map = s.getNext();
+				if(map.keySet().isEmpty()){
+					graph.addEdge(s, new CltsAction(" "), s);
+				}
+			}
+			
+			Set<CltsProcess> initialStates = new HashSet<CltsProcess>();
+			initialStates.add( (CltsProcess) p );
+			LtlModelChecker<CltsProcess> mc = new LtlModelChecker<CltsProcess>(graph, initialStates);
+			return mc.check(f);
+		}
+		if (cltsModel.getRegularSafetyProperties().contains(formula)) {
+			SafetyRegularModelChecker<CltsProcess> mc = new SafetyRegularModelChecker<>();
+			LTSGraph<CltsProcess, CltsAction> graph = new LTSGraph<CltsProcess, CltsAction>() ;
+			graph.addState((CltsProcess) p);
+			graph.expand();
+			Automaton<Predicate<CltsProcess>> automaton = cltsModel.getRegularSafetyProperty(formula);			
+			mc.setAutomaton(automaton);
+			mc.setTransitionSystem(graph.getGraph()); 
+			Set<CltsProcess> set = new HashSet<>();
+			set.add((CltsProcess) p);
+			mc.setInitialStates(set);
+			ModelCheckingResult<LinkedList<CltsProcess>> result = mc.check();
+			return result.isResult();
 		}
 		return false;
 	}
@@ -155,7 +182,7 @@ public class CLTSModelCheckerProvider implements TAPAsModelCheckerProvider {
 			cltsModel = (CltsModule)  TAPAsProjectHelper.loadClassFromProject(CltsModule.class.getClassLoader(), 
 					module.eResource(), module.getName() , file.getProject()).newInstance() ;	
 			} catch (Exception e) {
-				System.out.println("Exception: "+ e);
+				e.printStackTrace();
 				cltsModel = null;
 			}
 		}

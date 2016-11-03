@@ -14,7 +14,7 @@ public class CustomComposedLtsProjectCreator extends ComposedLtsProjectCreator{
 		List<String> result = super.getRequiredBundles();
 		result.addAll(TAPAsProjectHelper.addTapasBudles(result));
 		result.add(CLTS_RUNTIME);
-		result.add(CLTS_EXTENSIONS);
+//		result.add(CLTS_EXTENSIONS);
 		return result;
 	}
 

@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.EObject;
  */
 public class TAPAsElementViewProvider implements org.cmg.tapas.extensions.TAPAsElementViewProvider {
 
-	private EObject model;
+	private Model model;
 
 	/**
 	 * 
@@ -63,7 +63,7 @@ public class TAPAsElementViewProvider implements org.cmg.tapas.extensions.TAPAsE
 	@Override
 	public void setModel(EObject model) {
 		if (model instanceof Model) {
-			this.model = model;
+			this.model = (Model) model;
 		} else {
 			this.model = null;
 		}

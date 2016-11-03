@@ -103,7 +103,52 @@ Action:
 ;
 
 Formula:
- LtlFormulaDeclaration | HmlFormulaDeclaration
+ LtlFormulaDeclaration | HmlFormulaDeclaration | RegularSafety
+;
+
+RegularSafety:
+	'regular' name= ID '=' exp=BadPrefix ';'
+;
+
+BadPrefix:
+	ChoiceRExpression
+;
+
+ChoiceRExpression returns BadPrefix:
+	SequeceRExpression ({ChoiceRExpression.left=current} '+' right=SequeceRExpression)*
+;
+
+SequeceRExpression returns BadPrefix:
+	StarRExpression ({SequeceRExpression.left= current} right=StarRExpression)*
+;
+
+StarRExpression returns BadPrefix:
+	BasicRExpression ({StarRExpression.expression=current} '*')?
+;
+
+BasicRExpression returns BadPrefix:
+	  '[' BooleanPredicate ']'
+	| '(' BadPrefix ')'
+;
+
+BooleanPredicate : 
+	OrPredicate
+;
+
+OrPredicate returns BooleanPredicate:
+	AndPredicate ({OrPredicate.left = current} '|' right=AndPredicate)*
+;
+
+AndPredicate returns BooleanPredicate:
+	BasicPredicate ({AndPredicate.left = current} '&' right=BasicPredicate)*
+;
+
+BasicPredicate returns BooleanPredicate:
+	'(' BooleanPredicate ')'
+	| {Atomic} label=[Label]	
+	| {NotPredicate} '!' arg=BasicPredicate
+	| {TruePredicate} 'true'
+	| {FalsePredicate} 'false'
 ;
 
 HmlFormulaDeclaration:

@@ -51,6 +51,18 @@ import org.cmg.tapas.xtext.clts.composedLts.ControlledInteraction
 import org.cmg.tapas.xtext.clts.composedLts.CompositionBody
 import org.cmg.tapas.xtext.clts.composedLts.Reference
 import org.cmg.tapas.xtext.clts.composedLts.Renaming
+import org.cmg.tapas.xtext.clts.composedLts.RegularSafety
+import org.cmg.tapas.xtext.clts.composedLts.ChoiceRExpression
+import org.cmg.tapas.xtext.clts.composedLts.SequeceRExpression
+import org.cmg.tapas.xtext.clts.composedLts.StarRExpression
+import org.cmg.tapas.xtext.clts.composedLts.BooleanPredicate
+import org.cmg.tapas.xtext.clts.composedLts.OrPredicate
+import org.cmg.tapas.xtext.clts.composedLts.BadPrefix
+import org.cmg.tapas.xtext.clts.composedLts.AndPredicate
+import org.cmg.tapas.xtext.clts.composedLts.NotPredicate
+import org.cmg.tapas.xtext.clts.composedLts.TruePredicate
+import org.cmg.tapas.xtext.clts.composedLts.FalsePredicate
+import org.cmg.tapas.xtext.clts.composedLts.Atomic
 
 /**
  * Generates code from your model files on save.
@@ -111,6 +123,8 @@ class ComposedLtsGenerator implements IGenerator {
 		import org.cmg.tapas.formulae.hml.HmlAtomic;
 		import org.cmg.tapas.core.graph.filter.*;
 		import java.util.*;
+		import org.cmg.tapas.core.regular.*;
+		import java.util.function.Predicate;
 		
 		public class «m.name» extends CltsModule {
 				protected void initActions() {
@@ -126,6 +140,9 @@ class ComposedLtsGenerator implements IGenerator {
 				«FOR f:m.elements.filter(typeof(LtlFormulaDeclaration))»
 				addFormula( "«f.name»" , generate_LTLFORMULA_«f.name»() );
 				«ENDFOR»
+				«FOR f:m.elements.filter(typeof(RegularSafety))»
+				addFormula( "«f.name»" , generate_REGULARAUTOMATON_«f.name»() );
+				«ENDFOR»
 			}
 			
 			«FOR f:m.elements.filter(typeof(HmlFormulaDeclaration))»
@@ -134,6 +151,10 @@ class ComposedLtsGenerator implements IGenerator {
 			
 			«FOR f:m.elements.filter(typeof(LtlFormulaDeclaration))»
 			«f.formulaDeclaration»	
+			«ENDFOR»
+			
+			«FOR f:m.elements.filter(typeof(RegularSafety))»
+			«f.regularDeclaration»
 			«ENDFOR»
 			
 			protected void initStateSpace() {
@@ -364,6 +385,36 @@ class ComposedLtsGenerator implements IGenerator {
 				''''''
 		}
 	}
+
+	def CharSequence generateRegularAutomaton( BadPrefix f ) {
+		switch f {
+		ChoiceRExpression: '''Automaton.union( «f.left.generateRegularAutomaton» , «f.right.generateRegularAutomaton»)'''
+		SequeceRExpression: '''Automaton.concatenate( «f.left.generateRegularAutomaton» , «f.right.generateRegularAutomaton»)'''
+		StarRExpression: '''Automaton.star( «f.expression.generateRegularAutomaton» )'''
+		BooleanPredicate: '''Automaton.getSingleton( s -> «f.generateBooleanPredicate» )'''
+		}
+	}	
+	
+	def CharSequence generateBooleanPredicate( BooleanPredicate e ) {
+		switch e {
+		OrPredicate: '''(«e.left.generateBooleanPredicate»)||(«e.right.generateBooleanPredicate»)'''
+		AndPredicate: '''(«e.left.generateBooleanPredicate»)&&(«e.right.generateBooleanPredicate»)'''
+		NotPredicate: '''!(«e.arg.generateBooleanPredicate»)'''
+		Atomic: '''getLabel( "«e.label.name»" ).check( s )'''
+		TruePredicate: '''true'''
+		FalsePredicate: '''false''' 			
+		}
+	}
+
+	def getRegularDeclaration( RegularSafety formula ) {
+		'''
+
+		protected Automaton<Predicate<CltsProcess>> generate_REGULARAUTOMATON_«formula.name»() {
+				return «formula.exp.generateRegularAutomaton»;
+		}
+		
+		'''		
+	}	
 	
 	def CharSequence generatePopulationOfRecursiveFormulae( HmlFormula f ) {
 		switch f {
